@@ -1,4 +1,5 @@
 import json
+import os
 import re
 from typing import Any
 
@@ -30,6 +31,17 @@ class UnitConverterCapability(MatchingCapability):
     #{{register capability}}
     worker: AgentWorker | None = None
     capability_worker: CapabilityWorker | None = None
+
+    @classmethod
+    def register_capability(cls) -> "MatchingCapability":
+        with open(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+        ) as file:
+            data = json.load(file)
+        return cls(
+            unique_name=data["unique_name"],
+            matching_hotwords=data["matching_hotwords"],
+        )
 
     def call(self, worker: AgentWorker):
         self.worker = worker
